@@ -18,7 +18,7 @@ class SwingGate :
         try :
             par = {'barcode' : barcode, 'ipv4' : self.get_ip_address()}
             url = self.ip_address_server + self.url_check_ticket
-            response = requests.get(url, params=par)
+            response = requests.get(url, params=par, timeout=10)
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
@@ -26,8 +26,13 @@ class SwingGate :
                 self.relay.on()
                 sleep(self.delay_time)
             self.relay.off()
-                
-        except requests.exceptions.HTTPError as err :
+        except requests.exceptions.ConnectionError as errc :
+            print("cannot establish connection to server. please setup the server properly.")
+            sys.exit(1)
+        except requets.exceptions.Timeout as errt:
+            print(errt)
+            sys.exit(1)
+        except requests.exceptions.HTTPError as err :            
             print(err)
             sys.exit(1)
             
