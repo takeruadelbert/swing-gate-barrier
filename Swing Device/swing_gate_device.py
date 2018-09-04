@@ -1,3 +1,4 @@
+from server_config import ip_address_server, url_check_ticket
 import requests, sys
 import socket
 import fcntl
@@ -56,8 +57,5 @@ class SwingGate :
             print("\n")
 
 if __name__ == "__main__" :
-    ip_address_server = "http://192.168.1.201"
-    url_check_ticket = "/epass-passenger/api/validate-ticket"
     swing = SwingGate(ip_address_server, url_check_ticket)
     swing.main()
-    #print(swing.get_ip_address('eth0'))
