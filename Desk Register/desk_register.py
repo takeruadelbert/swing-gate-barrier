@@ -1,4 +1,4 @@
-from config_server import *
+from config import *
 from time import sleep
 from subprocess import call
 
