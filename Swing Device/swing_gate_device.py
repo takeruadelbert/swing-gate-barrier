@@ -1,5 +1,6 @@
 from config import *
 from time import sleep
+from subprocess import call
 
 import requests, sys
 import socket
@@ -23,16 +24,22 @@ class SwingGate :
             if data_json['status'] == 206 or data_json['status'] == 200 :
                 self.relay.on()
                 sleep(delay_time)
+                self.play_sound(path_sound_file_success)
+            else :
+                self.play_sound(path_sound_file_invalid)
             self.relay.off()
         except requests.exceptions.ConnectionError as errc :
+            self.play_sound(path_sound_file_error_conn)
             print("cannot establish connection to server. please setup the server properly.")
             self.retry_connect()
             self.main()
         except requets.exceptions.Timeout as errt:
+            self.play_sound(path_sound_file_error_timeout)
             print(errt)
             self.retry_connect()
             self.main()
-        except requests.exceptions.HTTPError as err :            
+        except requests.exceptions.HTTPError as err :
+            self.play_sound(path_sound_file_error_http)
             print(err)
             self.retry_connect()
             self.main()
@@ -53,6 +60,9 @@ class SwingGate :
             sleep(1)
             x -= 1
         print("Reconnecting ...")
+    
+    def play_sound(self, path_sound_file) :            
+        call(['aplay', path_sound_file])
         
     def main(self) :
         while True :
@@ -62,4 +72,5 @@ class SwingGate :
                 self.check_ticket_validity(input_barcode)
             else :
                 print("Invalid Barcode")
+                self.play_sound(path_sound_file_invalid)
             print("\n")
