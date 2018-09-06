@@ -5,4 +5,4 @@ timeout_connection = 10 # seconds
 reconnect_time = 5 # seconds
 
 # Miscellaneous
-dir_path_sound = "files/sound/"
+dir_path_sound = "/home/pi/python/files/sound/"
