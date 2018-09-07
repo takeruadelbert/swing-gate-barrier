@@ -8,36 +8,31 @@ import fcntl
 import struct
 import re
 
-class DeskRegister :
-    def __init__(self, ip_address_server, url_post_data, timeout_conn) :
-        self.ip_address_server = ip_address_server
-        self.url_post_data = url_post_data
-        self.timeout_conn = timeout_conn # seconds
-        
+class DeskRegister :        
     def register(self, barcode) :
         try :
             param = {"barcode" : barcode, "ipv4" : self.get_ip_address()}
-            url = self.ip_address_server + self.url_post_data
-            response = requests.post(url, data=param, timeout=self.timeout_conn)
+            full_url = ip_address_server + url
+            response = requests.post(full_url, data=param, timeout=timeout_connection)
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
             if data_json['status'] == 204 :
-                self.play_sound("success")
+                self.play_sound(path_sound_file_success)
             else :
-                self.play_sound("error")
+                self.play_sound(path_sound_file_invalid)
         except requests.exceptions.ConnectionError as errc :
-            self.play_sound("error")
+            self.play_sound(path_sound_file_error_conn)
             print("Error : cannot establish connection to server. Please configure the server properly.")
             self.retry_connect()
             self.reconnect(barcode)
         except requests.exceptions.Timeout as errt :
-            self.play_sound("error")
+            self.play_sound(path_sound_file_error_timeout)
             print(errt)
             self.retry_connect()
             self.reconnect(barcode)
         except requests.exceptions.HTTPError as errh :
-            self.play_sound("error")
+            self.play_sound(path_sound_file_error_http)
             print(errh)
             self.retry_connect()
             self.reconnect(barcode)            
@@ -52,7 +47,7 @@ class DeskRegister :
         return str(ip_address)
     
     def check_server_config(self) :
-        if self.ip_address_server != "" and self.url_post_data != "" :
+        if ip_address_server != "" and url != "" :
             return True
         else :
             return False
@@ -68,20 +63,16 @@ class DeskRegister :
     def reconnect(self, barcode) :
         self.register(barcode)
         
-    def play_sound(self, type) :
-        if type == "error" :
-            file_name = "beep-error.wav"
-        else :
-            file_name = "beep-success.wav"
-        file_path = dir_path_sound + file_name
-        call(['aplay', file_path])
+    def play_sound(self, path_file_sound) :
+        call(['aplay', path_file_sound])
             
     def main(self) :
         while True :
             barcode = str(input("Scan Barcode : "))
             input_barcode = re.sub(r"\W", "", barcode).replace("B", "")
             if barcode != "" :
-                self.register(barcode)
+                self.register(input_barcode)
             else :
+                self.play_sound(path_sound_file_invalid)
                 print("Invalid Barcode")
             print("\n")
