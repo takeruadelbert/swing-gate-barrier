@@ -61,7 +61,7 @@ class DeskRegister :
         print("Connecting ...")
     
     def reconnect(self, barcode) :
-        self.register(barcode)
+        self.main()
         
     def play_sound(self, path_file_sound) :
         call(['aplay', path_file_sound])
