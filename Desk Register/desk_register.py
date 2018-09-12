@@ -38,13 +38,16 @@ class DeskRegister :
             self.reconnect(barcode)            
     
     def get_ip_address(self, ifname = 'eth0'):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        ip_address = socket.inet_ntoa(fcntl.ioctl(
-            s.fileno(),
-            0x8915,  # SIOCGIFADDR
-            struct.pack('256s', bytes(ifname[:15], 'utf-8'))
-        )[20:24])
-        return str(ip_address)
+        try :
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            ip_address = socket.inet_ntoa(fcntl.ioctl(
+                s.fileno(),
+                0x8915,  # SIOCGIFADDR
+                struct.pack('256s', bytes(ifname[:15], 'utf-8'))
+            )[20:24])
+            return str(ip_address)
+        except :
+            return "error"        
     
     def check_server_config(self) :
         if ip_address_server != "" and url != "" :
