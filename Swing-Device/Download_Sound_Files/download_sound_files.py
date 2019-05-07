@@ -51,6 +51,9 @@ class DownloadSoundFile :
             except requests.exceptions.Timeout as errt :
                 print(errt)
                 sys.exit(1)
+            except IOError:
+                print("No such created directory : ", "'" + dir_sound_file + "'. Make sure the directory exists/created.")
+                sys.exit(1)
         
     def main(self) :
         self.get_response_server()
