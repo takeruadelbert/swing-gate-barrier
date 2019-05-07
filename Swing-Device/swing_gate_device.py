@@ -17,7 +17,7 @@ class SwingGate :
         try :
             par = {'barcode' : barcode, 'ipv4' : self.get_ip_address()}
             url = ip_address_server + url_check_ticket
-            response = requests.get(url, params=par, timeout=timeout_connection)
+            response = requests.post(url, data=par, timeout=timeout_connection)
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
@@ -33,7 +33,7 @@ class SwingGate :
             print("cannot establish connection to server. please setup the server properly.")
             self.retry_connect()
             self.main()
-        except requets.exceptions.Timeout as errt:
+        except requests.exceptions.Timeout as errt:
             self.play_sound(path_sound_file_error_timeout)
             print(errt)
             self.retry_connect()

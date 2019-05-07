@@ -9,8 +9,9 @@ relay_pin = 2
 delay_time = 0.5 # in second(s)
 
 # sound file(s)
-path_sound_file_success = "/home/pi/python/files/sounds/success.wav"
-path_sound_file_invalid = "/home/pi/python/files/sounds/invalid.wav"
-path_sound_file_error_conn = "/home/pi/python/files/sounds/error_connection.wav"
-path_sound_file_error_timeout = "/home/pi/python/files/sounds/error_timeout.wav"
-path_sound_file_error_http = "/home/pi/python/files/sounds/error_http.wav"
+temp = "/home/pi/Documents/python/files/sounds/"
+path_sound_file_success = temp + "success.wav"
+path_sound_file_invalid = temp + "invalid.wav"
+path_sound_file_error_conn = temp + "error_connection.wav"
+path_sound_file_error_timeout = temp + "error_timeout.wav"
+path_sound_file_error_http = temp + "error_http.wav"
