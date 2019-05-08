@@ -21,7 +21,7 @@ class SwingGate :
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
-            if data_json['status'] == 206 or data_json['status'] == 200 :
+            if data_json['status'] == 200 :
                 self.relay.on()
                 sleep(delay_time)
                 self.play_sound(path_sound_file_success)
