@@ -15,7 +15,7 @@ class SwingGate :
         
     def check_ticket_validity(self, barcode) :
         try :
-            par = {'barcode' : barcode, 'ipv4' : self.get_ip_address()}
+            par = {'barcode' : barcode, 'ipv4' : self.get_ip_address("wlan0")}
             url = ip_address_server + url_check_ticket
             response = requests.post(url, data=par, timeout=timeout_connection)
             response.raise_for_status()

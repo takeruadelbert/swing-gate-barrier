@@ -1,5 +1,5 @@
 # For Server
-ip_address_server = "http://192.168.1.201"
+ip_address_server = "http://192.168.88.203"
 url = "/epass-passenger/api/register"
 timeout_connection = 10 # seconds
 reconnect_time = 5 # seconds
