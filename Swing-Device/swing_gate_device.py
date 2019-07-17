@@ -17,10 +17,7 @@ class SwingGate :
         try :
             par = {'barcode' : barcode, 'ipv4' : self.get_ip_address()}
             url = ip_address_server + url_check_ticket
-            print(par)
-            print(url)
             response = requests.post(url, data=par, timeout=timeout_connection)
-            print(response)
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
