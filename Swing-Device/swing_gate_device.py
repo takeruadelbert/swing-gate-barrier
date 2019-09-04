@@ -15,9 +15,12 @@ class SwingGate :
         
     def check_ticket_validity(self, barcode) :
         try :
-            par = {'barcode' : barcode, 'ipv4' : self.get_ip_address("wlan0")}
+            par = {"barcode" : barcode, "ipv4" : self.get_ip_address("wlan0")}
+            print(par)
             url = ip_address_server + url_check_ticket
-            response = requests.post(url, data=par, timeout=timeout_connection)
+            print(url)
+            response = requests.post(url, json=par, timeout=timeout_connection)
+            print("response = " + str(response))
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
@@ -67,7 +70,8 @@ class SwingGate :
     def main(self) :
         while True :
             barcode = str(input("scan Barcode : "))
-            input_barcode = re.sub(r"\W", "", barcode).replace("B", "")
+            input_barcode = re.sub(r"\W", "", barcode)
+            print("input = " + str(input_barcode))
             if barcode != "" :
                 self.check_ticket_validity(input_barcode)
             else :
