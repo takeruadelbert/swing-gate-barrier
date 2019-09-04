@@ -1,6 +1,6 @@
 # For Server Configuration
-ip_address_server = "http://192.168.88.203"
-url_check_ticket = "/epass-passenger/api/validate-ticket"
+ip_address_server = "http://192.168.88.210:4003"
+url_check_ticket = "/flap"
 timeout_connection = 5 # in second(s)
 retry_connect = 3 # in second(s)
 
