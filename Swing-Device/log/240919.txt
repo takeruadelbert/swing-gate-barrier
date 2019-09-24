@@ -1,0 +1,5 @@
+[Tue, 24 Sep 2019 12:56:02] Valid : Log has been saved successfully.
+[Tue, 24 Sep 2019 12:56:04] Code not Found.
+[Tue, 24 Sep 2019 12:56:04] Invalid Barcode : ''.
+[Tue, 24 Sep 2019 12:56:07] Code not Found.
+[Tue, 24 Sep 2019 12:56:11] Valid : Log has been saved successfully.
