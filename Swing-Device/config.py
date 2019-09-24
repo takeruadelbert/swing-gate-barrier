@@ -17,4 +17,4 @@ path_sound_file_error_timeout = temp + "error_timeout.wav"
 path_sound_file_error_http = temp + "error_http.wav"
 
 # Device Log
-path_log = "/home/pi/Documents/swing-gate-barrier/Swing-Devicelog/"
+path_log = "/home/pi/Documents/swing-gate-barrier/Swing-Device/log/"

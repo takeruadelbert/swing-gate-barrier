@@ -40,14 +40,14 @@ class SwingGate :
         except requests.exceptions.Timeout as errt:
             hasError = True
             self.play_sound(path_sound_file_error_timeout)
-            self.message = errt
+            self.message = str(errt)
         except requests.exceptions.HTTPError as err :
             hasError = True
             self.play_sound(path_sound_file_error_http)
-            self.message = err
+            self.message = str(err)
         except Exception as ex:
             hasError = True
-            self.message = ex
+            self.message = str(ex)
             self.play_sound(path_sound_file_error_conn)
         finally:
             self.writeLog(self.message)
@@ -87,7 +87,7 @@ class SwingGate :
             print(ex)
             
     def get_current_datetime(self):
-        return "[" + datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S") + "]"
+        return "[" + datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S.%f") + "]"
     
     def auto_create_log_dir(self):
         if not os.path.exists(path_log):
