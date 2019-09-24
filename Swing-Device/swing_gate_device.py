@@ -12,50 +12,48 @@ import datetime
 
 class SwingGate :
     def __init__(self) :
-        self.relay = gpiozero.OutputDevice(relay_pin, active_high=False, initial_value=False, pin_factory=None)
+        #self.relay = gpiozero.OutputDevice(relay_pin, active_high=False, initial_value=False, pin_factory=None)
         self.message = "";
         
     def check_ticket_validity(self, barcode) :
+        hasError = False
         try :
-            par = {"barcode" : barcode, "ipv4" : self.get_ip_address()}
+            par = {"barcode" : barcode, "ipv4" : self.get_ip_address("enp2s0")}
             url = ip_address_server + url_check_ticket
+            self.writeLog("Checking '" + barcode + "' ...")
             response = requests.post(url, json=par, timeout=timeout_connection)
             response.raise_for_status()
             data_json = response.json()
             self.message = data_json['message']
-            print(self.message)            
+            self.writeLog("Getting Response ...")
             if data_json['status'] == 200 :
-                self.relay.on()
+                #self.relay.on()
                 sleep(delay_time)
                 self.play_sound(path_sound_file_success)
             else :
                 self.play_sound(path_sound_file_invalid)
-            self.relay.off()
+            #self.relay.off()
         except requests.exceptions.ConnectionError as errc :
+            hasError = True
             self.play_sound(path_sound_file_error_conn)
             self.message = "cannot establish connection to server. please setup the server properly."
-            print(self.message)
-            self.retry_connect()
-            self.main()
         except requests.exceptions.Timeout as errt:
+            hasError = True
             self.play_sound(path_sound_file_error_timeout)
             self.message = errt
-            print(self.message)
-            self.retry_connect()
-            self.main()
         except requests.exceptions.HTTPError as err :
+            hasError = True
             self.play_sound(path_sound_file_error_http)
             self.message = err
-            print(self.message)
-            self.retry_connect()
-            self.main()
         except Exception as ex:
+            hasError = True
             self.message = ex
-            print(ex)
-            self.retry_connect()
-            self.main()
+            self.play_sound(path_sound_file_error_conn)
         finally:
             self.writeLog(self.message)
+            if hasError:                
+                self.retry_connect()
+                self.main()
             
     def get_ip_address(self, ifname = 'eth0'):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -79,6 +77,7 @@ class SwingGate :
         
     def writeLog(self, message):
         try:
+            print(message)
             filename = self.get_current_date_log_filename()
             file = open(path_log + filename, "a+");
             current_dt = self.get_current_datetime()
@@ -97,9 +96,9 @@ class SwingGate :
     def get_current_date_log_filename(self):
         return datetime.datetime.now().strftime("%d%m%y") + ".txt";
         
-    def main(self) :
-        self.auto_create_log_dir()
+    def main(self) :        
         while True :
+            self.auto_create_log_dir()
             barcode = str(input("scan Barcode : "))
             input_barcode = re.sub(r"\W", "", barcode)
             #print("input = " + str(input_barcode))
