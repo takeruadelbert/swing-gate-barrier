@@ -12,13 +12,13 @@ import datetime
 
 class SwingGate :
     def __init__(self) :
-        #self.relay = gpiozero.OutputDevice(relay_pin, active_high=False, initial_value=False, pin_factory=None)
+        self.relay = gpiozero.OutputDevice(relay_pin, active_high=False, initial_value=False, pin_factory=None)
         self.message = "";
         
     def check_ticket_validity(self, barcode) :
         hasError = False
         try :
-            par = {"barcode" : barcode, "ipv4" : self.get_ip_address("enp2s0")}
+            par = {"barcode" : barcode, "ipv4" : self.get_ip_address()}
             url = ip_address_server + url_check_ticket
             self.writeLog("Checking '" + barcode + "' ...")
             response = requests.post(url, json=par, timeout=timeout_connection)
@@ -27,12 +27,12 @@ class SwingGate :
             self.message = data_json['message']
             self.writeLog("Getting Response ...")
             if data_json['status'] == 200 :
-                #self.relay.on()
+                self.relay.on()
                 sleep(delay_time)
                 self.play_sound(path_sound_file_success)
             else :
                 self.play_sound(path_sound_file_invalid)
-            #self.relay.off()
+            self.relay.off()
         except requests.exceptions.ConnectionError as errc :
             hasError = True
             self.play_sound(path_sound_file_error_conn)
