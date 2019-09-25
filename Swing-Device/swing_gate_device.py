@@ -72,8 +72,9 @@ class SwingGate :
             x -= 1
         print("Reconnecting ...")
     
-    def play_sound(self, path_sound_file) :            
-        call(['aplay', path_sound_file])
+    def play_sound(self, path_sound_file) :
+        if set_to_play:
+            call(['aplay', path_sound_file])
         
     def writeLog(self, message):
         try:
