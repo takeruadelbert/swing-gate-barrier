@@ -9,51 +9,70 @@ import struct
 import gpiozero
 import re
 import datetime
+import asyncio
 
 class SwingGate :
     def __init__(self) :
         self.relay = gpiozero.OutputDevice(relay_pin, active_high=False, initial_value=False, pin_factory=None)
-        self.message = "";
+        self.message = ""
         
-    def check_ticket_validity(self, barcode) :
+    def request_api(self, barcode, url, payload):
         hasError = False
-        try :
-            par = {"barcode" : barcode, "ipv4" : self.get_ip_address()}
-            url = ip_address_server + url_check_ticket
+        try:
             self.writeLog("Checking '" + barcode + "' ...")
-            response = requests.post(url, json=par, timeout=timeout_connection)
+            response = requests.post(url, json=payload, timeout=timeout_connection)
             response.raise_for_status()
             data_json = response.json()
+            print(data_json)
             self.message = data_json['message']
-            self.writeLog("Getting Response ...")
-            if data_json['status'] == 200 :
+            self.writeLog("Getting Response from " + url + " ...")
+            if data_json['status'] == 200:
                 self.relay.on()
                 sleep(delay_time)
                 self.play_sound(path_sound_file_success)
-            else :
-                self.play_sound(path_sound_file_invalid)
-            self.relay.off()
+                self.writeLog(self.message)
+                return 200
+            elif data_json['status'] == 401:
+                self.writeLog(self.message)
+                return 401
+            else:
+                self.writeLog(data_json['message'])
+                return data_json['status']
         except requests.exceptions.ConnectionError as errc :
             hasError = True
-            self.play_sound(path_sound_file_error_conn)
             self.message = "cannot establish connection to server. please setup the server properly."
         except requests.exceptions.Timeout as errt:
             hasError = True
-            self.play_sound(path_sound_file_error_timeout)
             self.message = str(errt)
         except requests.exceptions.HTTPError as err :
             hasError = True
-            self.play_sound(path_sound_file_error_http)
             self.message = str(err)
         except Exception as ex:
             hasError = True
             self.message = str(ex)
-            self.play_sound(path_sound_file_error_conn)
         finally:
-            self.writeLog(self.message)
-            if hasError:                
+            if hasError:
+                self.writeLog(self.message)
+                return 500 # indicates error
+        
+    def check_ticket_validity(self, barcode) :
+        try:
+            payload = {"barcode" : barcode, "ipv4" : self.get_ip_address()}
+            url1 = ip_address_server + url_check_ticket
+            url2 = ip_address_server2 + url_check_ticket
+            response1 = self.request_api(barcode, url1, payload)
+            if response1 == 401:
+                response2 = self.request_api(barcode, url2, payload)
+                if response2 == 500:
+                    self.retry_connect()
+                    self.main()
+            elif response1 == 500:
                 self.retry_connect()
                 self.main()
+        except Exception as ex:
+            errorMessage = str(ex)
+            self.writeLog(errorMessage)
+            self.play_sound(path_sound_file_error_conn)
             
     def get_ip_address(self, ifname = 'eth0'):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
