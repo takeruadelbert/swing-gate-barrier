@@ -20,7 +20,7 @@ class SwingGate :
         hasError = False
         try:
             self.writeLog("Checking '" + barcode + "' ...")
-            response = requests.post(url, json=payload, timeout=timeout_connection)
+            response = requests.post(url, json=payload, timeout=timeout_connection, verify=False)
             response.raise_for_status()
             data_json = response.json()
             print(data_json)
