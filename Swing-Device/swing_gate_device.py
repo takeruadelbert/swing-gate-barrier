@@ -28,9 +28,10 @@ class SwingGate :
             self.writeLog("Getting Response from " + url + " ...")
             if data_json['status'] == 200:
                 self.relay.on()
-                sleep(delay_time)
                 self.play_sound(path_sound_file_success)
+                sleep(delay_time)                
                 self.writeLog(self.message)
+                self.relay.off()
                 return 200
             elif data_json['status'] == 401:
                 self.writeLog(self.message)
