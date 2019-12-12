@@ -3,3 +3,4 @@ log/*
 Swing-Device/log/*
 Swing-Device/config.py
 Swing-Device/__pycache__/*
+*.pyc

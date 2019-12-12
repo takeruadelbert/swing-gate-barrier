@@ -40,8 +40,9 @@ class SwingGate :
                 self.writeLog(data_json['message'])
                 return data_json['status']
         except requests.exceptions.ConnectionError as errc :
-            hasError = True
-            self.message = "cannot establish connection to server. please setup the server properly."
+            self.message = "cannot establish connection to " + url + ". please setup the server properly."
+            self.writeLog(self.message)
+            return 408 # connection timeout
         except requests.exceptions.Timeout as errt:
             hasError = True
             self.message = str(errt)
@@ -62,7 +63,7 @@ class SwingGate :
             url1 = ip_address_server + url_check_ticket
             url2 = ip_address_server2 + url_check_ticket
             response1 = self.request_api(barcode, url1, payload)
-            if response1 == 401:
+            if response1 == 401 or response1 == 408:
                 response2 = self.request_api(barcode, url2, payload)
                 if response2 == 500:
                     self.retry_connect()
